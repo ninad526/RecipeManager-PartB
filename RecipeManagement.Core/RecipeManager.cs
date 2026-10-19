@@ -10,20 +10,39 @@ namespace RecipeManagement.Core;
 /// </summary>
 public sealed class RecipeManager : IRecipeManager
 {
-    // TODO Part A: add your private collection fields here.
+    private readonly Dictionary<int, Recipe> recipes = new();
+private readonly List<string> shoppingList = new();
+private readonly LinkedList<int> cookingPlan = new();
+private readonly Stack<int> removedRecipes = new();
+private readonly Queue<string> instructions = new();
 
     public RecipeManager(IEnumerable<Recipe> recipes)
     {
-        // TODO Part A: validate recipes and build Dictionary<int, Recipe>.
-        _ = recipes;
+        if (recipes is null)
+{
+    throw new ArgumentNullException(nameof(recipes));
+}
+
+foreach (Recipe recipe in recipes)
+{
+    if (recipe.Id <= 0 ||
+        string.IsNullOrWhiteSpace(recipe.Title) ||
+        this.recipes.ContainsKey(recipe.Id))
+    {
+        throw new ArgumentException("Invalid or duplicate recipe.", nameof(recipes));
     }
 
-    public int RecipeCount => 0;
-    public int ShoppingItemCount => 0;
-    public int CookingPlanCount => 0;
-    public int PendingInstructionCount => 0;
-    public int RemovedRecipeCount => 0;
+    this.recipes.Add(recipe.Id, recipe);
+}
+       
+    }
 
+ 
+public int RecipeCount => recipes.Count;
+public int ShoppingItemCount => shoppingList.Count;
+public int CookingPlanCount => cookingPlan.Count;
+public int PendingInstructionCount => instructions.Count;
+public int RemovedRecipeCount => removedRecipes.Count;
     public bool AddRecipe(Recipe recipe) =>
         throw new NotImplementedException("Part A: implement AddRecipe.");
 
