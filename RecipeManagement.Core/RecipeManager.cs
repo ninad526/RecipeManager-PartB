@@ -62,17 +62,39 @@ public bool AddRecipe(Recipe recipe)
     recipes.TryGetValue(recipeId, out Recipe? recipe);
     return recipe;
 }
-    public bool RemoveRecipe(int recipeId) =>
-        throw new NotImplementedException("Part A: implement RemoveRecipe.");
+   public bool RemoveRecipe(int recipeId)
+{
+    if (cookingPlan.Contains(recipeId))
+        return false;
 
-    public int AddIngredientsToShoppingList(int recipeId) =>
-        throw new NotImplementedException("Part A: implement AddIngredientsToShoppingList.");
+    return recipes.Remove(recipeId);
+}
 
-    public IReadOnlyList<string> GetShoppingList() =>
-        throw new NotImplementedException("Part A: implement GetShoppingList.");
+    public int AddIngredientsToShoppingList(int recipeId)
+{
+    Recipe? recipe = FindRecipe(recipeId);
 
-    public void ClearShoppingList() =>
-        throw new NotImplementedException("Part A: implement ClearShoppingList.");
+    if (recipe is null)
+        return 0;
+
+    foreach (string ingredient in recipe.Ingredients)
+    {
+        shoppingList.Add(ingredient);
+    }
+
+    return recipe.Ingredients.Count;
+}
+
+    public IReadOnlyList<string> GetShoppingList()
+{
+    return shoppingList.AsReadOnly();
+}
+
+public void ClearShoppingList()
+{
+    shoppingList.Clear();
+}
+
 
     public bool AddRecipeToCookingPlan(int recipeId) =>
         throw new NotImplementedException("Part A: implement AddRecipeToCookingPlan.");
