@@ -85,6 +85,16 @@ public void EmptyInstructionQueue_ReturnsNull()
     Assert.Null(manager.PeekNextInstruction());
     Assert.Null(manager.CompleteNextInstruction());
 }
+[Fact]
+public void RecipeWorkflow_WorksTogether()
+{
+    var manager = CreateManager();
+
+    Assert.Equal(1, manager.AddIngredientsToShoppingList(10));
+    Assert.True(manager.AddRecipeToCookingPlan(10));
+    Assert.True(manager.StartCooking(10));
+    Assert.Equal("First step", manager.PeekNextInstruction());
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
