@@ -57,9 +57,11 @@ public bool AddRecipe(Recipe recipe)
     recipes.Add(recipe.Id, recipe);
     return true;
 }
-    public Recipe? FindRecipe(int recipeId) =>
-        throw new NotImplementedException("Part A: implement FindRecipe.");
-
+    public Recipe? FindRecipe(int recipeId)
+{
+    recipes.TryGetValue(recipeId, out Recipe? recipe);
+    return recipe;
+}
     public bool RemoveRecipe(int recipeId) =>
         throw new NotImplementedException("Part A: implement RemoveRecipe.");
 
