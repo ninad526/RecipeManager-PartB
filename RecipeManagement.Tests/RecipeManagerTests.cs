@@ -38,7 +38,53 @@ public sealed class RecipeManagerTests
         Assert.True(manager.RestoreLastRemovedRecipe());
         Assert.Equal(new[] { 20 }, manager.GetCookingPlan());
     }
+[Fact]
+public void AddRecipe_RejectsDuplicateId()
+{
+    var manager = CreateManager();
 
+    var duplicate = new Recipe
+    {
+        Id = 10,
+        Title = "Another Recipe"
+    };
+
+    Assert.False(manager.AddRecipe(duplicate));
+    Assert.Equal(2, manager.RecipeCount);
+    Assert.Null(manager.FindRecipe(999));
+}
+   [Fact]
+public void CookingPlan_RejectsDuplicatesAndEmptyHistory()
+{
+    var manager = CreateManager();
+
+    Assert.True(manager.AddRecipeToCookingPlan(10));
+    Assert.False(manager.AddRecipeToCookingPlan(10));
+    Assert.Equal(1, manager.CookingPlanCount);
+    Assert.False(manager.RestoreLastRemovedRecipe());
+}
+[Fact]
+public void ShoppingList_CanBeCleared()
+{
+    var manager = CreateManager();
+
+    Assert.Equal(1, manager.AddIngredientsToShoppingList(10));
+    Assert.Equal(1, manager.ShoppingItemCount);
+
+    manager.ClearShoppingList();
+
+    Assert.Equal(0, manager.ShoppingItemCount);
+    Assert.Empty(manager.GetShoppingList());
+}
+
+[Fact]
+public void EmptyInstructionQueue_ReturnsNull()
+{
+    var manager = CreateManager();
+
+    Assert.Null(manager.PeekNextInstruction());
+    Assert.Null(manager.CompleteNextInstruction());
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
