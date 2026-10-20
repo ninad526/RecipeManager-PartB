@@ -107,6 +107,15 @@ public void Constructor_RejectsDuplicateIds()
     Assert.Throws<ArgumentException>(
         () => new RecipeManager(recipes));
 }
+[Fact]
+public void RecipeInCookingPlan_CannotBeRemoved()
+{
+    var manager = CreateManager();
+
+    Assert.True(manager.AddRecipeToCookingPlan(10));
+    Assert.False(manager.RemoveRecipe(10));
+    Assert.NotNull(manager.FindRecipe(10));
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
