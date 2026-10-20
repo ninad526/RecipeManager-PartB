@@ -116,6 +116,17 @@ public void RecipeInCookingPlan_CannotBeRemoved()
     Assert.False(manager.RemoveRecipe(10));
     Assert.NotNull(manager.FindRecipe(10));
 }
+[Fact]
+public void RecipeCatalogue_AddFindRemove()
+{
+    var manager = CreateManager();
+    var recipe = new Recipe { Id = 30, Title = "Recipe C" };
+
+    Assert.True(manager.AddRecipe(recipe));
+    Assert.Equal("Recipe C", manager.FindRecipe(30)?.Title);
+    Assert.True(manager.RemoveRecipe(30));
+    Assert.Null(manager.FindRecipe(30));
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
