@@ -127,6 +127,34 @@ public void RecipeCatalogue_AddFindRemove()
     Assert.True(manager.RemoveRecipe(30));
     Assert.Null(manager.FindRecipe(30));
 }
+[Fact]
+public void Constructor_RejectsZeroRecipeId()
+{
+    var recipes = new[]
+    {
+        new Recipe { Id = 0, Title = "Invalid Recipe" }
+    };
+
+    Assert.Throws<ArgumentException>(
+        () => new RecipeManager(recipes));
+}
+[Fact]
+public void Constructor_RejectsBlankTitle()
+{
+    var recipes = new[]
+    {
+        new Recipe { Id = 1, Title = " " }
+    };
+
+    Assert.Throws<ArgumentException>(
+        () => new RecipeManager(recipes));
+}
+[Fact]
+public void Constructor_RejectsNullRecipes()
+{
+    Assert.Throws<ArgumentNullException>(
+        () => new RecipeManager(null!));
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
