@@ -146,14 +146,36 @@ public bool RemoveRecipeFromCookingPlan(int recipeId)
 {
     return new List<int>(cookingPlan).AsReadOnly();
 }
-    public bool StartCooking(int recipeId) =>
-        throw new NotImplementedException("Part A: implement StartCooking.");
+   public bool StartCooking(int recipeId)
+{
+    Recipe? recipe = FindRecipe(recipeId);
 
-    public string? PeekNextInstruction() =>
-        throw new NotImplementedException("Part A: implement PeekNextInstruction.");
+    if (recipe is null || recipe.Instructions.Count == 0)
+        return false;
 
-    public string? CompleteNextInstruction() =>
-        throw new NotImplementedException("Part A: implement CompleteNextInstruction.");
+    instructions.Clear();
+
+    foreach (string instruction in recipe.Instructions)
+    {
+        instructions.Enqueue(instruction);
+    }
+
+    return true;
+}
+public string? PeekNextInstruction()
+{
+    if (instructions.Count == 0)
+        return null;
+
+    return instructions.Peek();
+}
+    public string? CompleteNextInstruction()
+{
+    if (instructions.Count == 0)
+        return null;
+
+    return instructions.Dequeue();
+}
 
     public IReadOnlyList<Recipe> SearchByTitle(string searchText) =>
         throw new NotImplementedException("Part B: implement SearchByTitle.");
