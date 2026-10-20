@@ -95,6 +95,18 @@ public void RecipeWorkflow_WorksTogether()
     Assert.True(manager.StartCooking(10));
     Assert.Equal("First step", manager.PeekNextInstruction());
 }
+[Fact]
+public void Constructor_RejectsDuplicateIds()
+{
+    var recipes = new[]
+    {
+        new Recipe { Id = 1, Title = "Recipe One" },
+        new Recipe { Id = 1, Title = "Recipe Two" }
+    };
+
+    Assert.Throws<ArgumentException>(
+        () => new RecipeManager(recipes));
+}
     private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
