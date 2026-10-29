@@ -25,8 +25,7 @@ Starter repository for Parts A and B. Implement `RecipeManager` in Core; the App
 
 ## Build and run
 
-Open `StudentPackage/RecipeManagement.sln`:
-
+Open RecipeManagement.sln:
 ```bash
 dotnet build
 dotnet test

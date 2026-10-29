@@ -155,7 +155,93 @@ public void Constructor_RejectsNullRecipes()
     Assert.Throws<ArgumentNullException>(
         () => new RecipeManager(null!));
 }
-    private static RecipeManager CreateManager()
+[Fact]
+public void SearchByTitle_IsCaseInsensitiveAndPartial()
+{
+    var manager = CreateManager();
+
+    var results = manager.SearchByTitle("cIpE");
+
+    Assert.Equal(2, results.Count);
+    Assert.Contains(results, recipe => recipe.Title == "Recipe A");
+    Assert.Contains(results, recipe => recipe.Title == "Recipe B");
+}
+[Fact]
+public void SearchByIngredient_IsCaseInsensitiveAndPartial()
+{
+    var manager = CreateManager();
+
+    var results = manager.SearchByIngredient("APP");
+
+    Assert.Single(results);
+    Assert.Equal("Recipe A", results[0].Title);
+}
+[Fact]
+public void GetHighestProteinRecipes_OrdersResultsAndSkipsMissingNutrition()
+{
+    var manager = new RecipeManager(new[]
+    {
+        new Recipe
+        {
+            Id = 1,
+            Title = "Low Protein",
+            Nutrition = new NutritionInfo { ProteinG = 10 }
+        },
+        new Recipe
+        {
+            Id = 2,
+            Title = "High Protein",
+            Nutrition = new NutritionInfo { ProteinG = 30 }
+        },
+        new Recipe
+        {
+            Id = 3,
+            Title = "Unknown Protein",
+            Nutrition = null
+        }
+    });
+
+    var results = manager.GetHighestProteinRecipes(2);
+
+    Assert.Equal(2, results.Count);
+    Assert.Equal("High Protein", results[0].Title);
+    Assert.Equal("Low Protein", results[1].Title);
+}
+[Fact]
+public void SavedRecipes_AddDuplicateRemoveAndCheck()
+{
+    var manager = CreateManager();
+
+    Assert.True(manager.AddSavedRecipe(10));
+    Assert.True(manager.IsRecipeSaved(10));
+
+    Assert.False(manager.AddSavedRecipe(10));
+    Assert.False(manager.AddSavedRecipe(999));
+
+    Assert.True(manager.RemoveSavedRecipe(10));
+    Assert.False(manager.IsRecipeSaved(10));
+    Assert.False(manager.RemoveSavedRecipe(10));
+
+    Assert.Empty(manager.GetSavedRecipes());
+    
+}  [Fact]
+public void PartBWorkflow_SearchSaveAndRemoveRecipe()
+{
+    var manager = CreateManager();
+
+    var results = manager.SearchByTitle("Recipe A");
+
+    Assert.Single(results);
+
+    int recipeId = results[0].Id;
+
+    Assert.True(manager.AddSavedRecipe(recipeId));
+    Assert.True(manager.IsRecipeSaved(recipeId));
+
+    Assert.True(manager.RemoveSavedRecipe(recipeId));
+    Assert.False(manager.IsRecipeSaved(recipeId));
+}
+  private static RecipeManager CreateManager()
     {
         return new RecipeManager(new[]
         {
